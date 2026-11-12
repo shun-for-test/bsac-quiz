@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BSAC 初級ライセンス 模擬テスト</title>
+<style>
+:root{--bg:#f5f7fa;--card:#fff;--tx:#1b2430;--sub:#5f6b7a;--bd:#d5dce6;--pri:#0b6fb8;--ok:#1a8f4c;--ng:#c6362f;--warn:#b86e00;--wbg:#fff4e0;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#12171d;--card:#1c242d;--tx:#e8edf3;--sub:#9aa7b5;--bd:#33404e;--pri:#4aa8ec;--ok:#46c47a;--ng:#ff7b73;--warn:#f0b04a;--wbg:#3a2f18}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#12171d;--card:#1c242d;--tx:#e8edf3;--sub:#9aa7b5;--bd:#33404e;--pri:#4aa8ec;--ok:#46c47a;--ng:#ff7b73;--warn:#f0b04a;--wbg:#3a2f18}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;line-height:1.6}
+main{max-width:680px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:20px}
+h1{font-size:1.4rem;margin:0 0 12px}h2{font-size:1.15rem;margin:16px 0}
+button{font:inherit;color:inherit;cursor:pointer}
+.btn{background:var(--pri);color:#fff;border:0;border-radius:8px;padding:12px 20px;font-weight:600}
+.btn.sub{background:transparent;color:var(--tx);border:1px solid var(--bd)}
+.btn:disabled{opacity:.4;cursor:default}
+.top{display:flex;justify-content:space-between;align-items:center;color:var(--sub);font-size:.9rem}
+.link{background:none;border:0;color:var(--pri);text-decoration:underline}
+.bar{height:6px;background:var(--bd);border-radius:3px;margin:8px 0}.bar i{display:block;height:100%;background:var(--pri);border-radius:3px}
+.opts{display:grid;gap:10px}
+.opt{text-align:left;background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:14px}
+.opt:hover{border-color:var(--pri)}.opt.sel{border-color:var(--pri);background:color-mix(in srgb,var(--pri) 14%,transparent)}
+.flag{display:flex;gap:8px;align-items:center;margin:16px 0;color:var(--warn);font-weight:600}
+.nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.warn{background:var(--wbg);border:1px solid var(--warn);color:var(--tx);border-radius:8px;padding:14px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(42px,1fr));gap:6px;margin:12px 0}
+.grid button{border:1px solid var(--bd);background:var(--card);border-radius:6px;padding:6px 0;position:relative}
+.grid .done{background:color-mix(in srgb,var(--ok) 20%,transparent)}.grid .un{border-color:var(--ng);color:var(--ng)}
+.grid .fl::after{content:"⚑";position:absolute;top:-6px;right:-2px;font-size:.8rem;color:var(--warn)}
+.score{font-size:2.4rem;font-weight:700;margin:4px 0}.pass{color:var(--ok)}.fail{color:var(--ng)}
+.rv{border-top:1px solid var(--bd);padding:12px 0;font-size:.92rem}.rv b.ok{color:var(--ok)}.rv b.ng{color:var(--ng)}
+.leg{font-size:.8rem;color:var(--sub)}
+.rv.o,.rv.x{padding-left:10px}.rv.o{border-left:3px solid var(--ok)}.rv.x{border-left:3px solid var(--ng)}.ex{color:var(--sub);margin-top:4px}
+</style>
+</head>
+<body>
+<main><div class="card" id="app"></div></main>
+<script>
+// 問題バンク(100問): 問題文|正解|誤答1|誤答2|誤答3
+const RAW=`BSACが設立された国と年は?|英国・1953年|米国・1953年|英国・1971年|豪州・1960年|BSACは1953年に英国で設立された、クラブ主体の潜水団体。
+海水での水深25mの絶対圧は約?(水面=1気圧、10mごとに+1気圧)|3.5気圧|2.5気圧|4.5気圧|3.0気圧|絶対圧=1+25÷10=3.5気圧。
+水深30mでBCD内に入れた空気1Lを、そのまま水面まで持ち上げると体積は約?|4L|2L|3L|1L|30mは4気圧、水面は1気圧。ボイルの法則で体積は4倍になる。
+水面で毎分20L消費する人の、水深20mでの消費量は約?|60L|40L|80L|30L|20mは3気圧なので消費量は3倍になる。
+12L・200barのタンクの空気量(水面換算)は約?|2400L|1200L|240L|4800L|容量×圧力=12×200=2400L。
+空気(窒素79%)の水深30mでの窒素分圧は約?|3.2bar|2.4bar|0.8bar|4.0bar|ドルトンの法則。全圧4bar×0.79≒3.2bar。
+レクリエーションダイビングで一般的な酸素分圧の上限は?|1.4bar|0.21bar|2.5bar|3.0bar|酸素分圧が高いほど酸素中毒のリスクが上がり、1.4barが一般的な目安。
+空気で酸素分圧が1.4barに達する水深は約?|約57m|約30m|約40m|約70m|1.4÷0.21≒6.7気圧で、水深は約57m。
+窒素酔いの主な症状は?|判断力の低下や多幸感|高熱|発疹|激しい空腹|窒素分圧の上昇で酩酊に似た症状が出る。
+浮上中に息を止めると何が起こる?|肺内の空気が膨張して肺を損傷する|窒素が増える|酸素が増える|体が冷える|圧力低下で気体が膨張する(ボイルの法則)。
+肺の過膨張が特に危険な水深帯は?|浅い所(圧力比の変化が大きい)|深い所のみ|着底直後|どこも同じ|10mから水面で2気圧→1気圧となり、体積が2倍になる。
+圧力に比例して気体が液体に溶ける量が増える法則は?|ヘンリーの法則|ボイルの法則|シャルルの法則|パスカルの原理|減圧症は、溶けた窒素が気泡化することで起こる。
+一定温度で、圧力と気体の体積が反比例する法則は?|ボイルの法則|ヘンリーの法則|ドルトンの法則|アルキメデスの原理|浮力の変化や肺の膨張を説明する基本法則。
+物体に働く浮力の大きさは?|押しのけた水の重さに等しい|物体の重さに等しい|物体の体積のみで決まる|水深に比例する|アルキメデスの原理。
+淡水から海水に移動したときのウエイト調整は?|増やす必要がある|減らす|変わらない|不要になる|海水は密度が高く浮力が大きいため。
+水深が深くなるとウェットスーツの浮力は?|減少する|増加する|変わらない|ゼロで固定される|素材内の気泡が圧縮されるため。
+潜水中にタンクの空気を消費すると浮力は?|わずかに増す(軽くなる)|減る|変わらない|極端に沈む|空気の重量分だけタンクが軽くなる。
+減圧症の典型的な症状は?|関節痛・しびれ・強い疲労感|くしゃみ|鼻水|空腹感|体内で窒素が気泡化し、組織や血管に影響する。
+減圧症が疑われる場合の対応は?|高濃度酸素を吸入し医療機関へ|再潜水して様子を見る|大量に飲酒する|熱い風呂に入る|酸素投与と再圧治療が基本。
+浮上時の肺損傷で最も重い合併症は?|動脈ガス塞栓症|筋肉痛|日焼け|船酔い|気泡が動脈に入り、脳梗塞のような症状を起こすことがある。
+潜水後に飛行機へ搭乗するまでの一般的な最低目安は?|24時間以上|1時間|3時間|不要|団体により異なるが、最低12時間以上が一般的。
+反復潜水の組み立てとして望ましいのは?|深い潜水を先に、浅い潜水を後に|浅い潜水を先に|順序は無関係|常に同じ深度|窒素の残留を考えると、深→浅の順が安全。
+浮沈を繰り返すヨーヨーダイビングが避けられる理由は?|気泡形成のリスクが高まるため|空気が節約できるため|魚が逃げるため|体温が上がるため|圧力変化の繰り返しが減圧症リスクを高める。
+安全停止の主な目的は?|窒素の排出を助け浮上を制御する|写真撮影|体を温める|水深計の補正|減圧症リスクの低減と、浮上速度の確認が目的。
+潜降中にマスクが顔に張り付いたときの対処は?|鼻から息を吹き込む|さらに潜る|マスクを外す|息を止める|水圧でマスク内の空気が圧縮されるため、空気を補う。
+レギュレーターから空気が噴き出し続ける(フリーフロー)ときは?|吸いながら浮上しバディの援助を受ける|息を止める|タンクを外す|マスクを外す|フリーフローでも呼吸は可能。落ち着いて対処する。
+オクトパス(予備の空気源)の適切な位置は?|胸元など素早く取れる位置|背中|足首|ポケット内|バディが緊急時にすぐ見つけて使えることが重要。
+バディ呼吸(エア共有)の基本手順は?|合図→接近→空気源を受け取る→安定→共に浮上|各自で急浮上|息止めで浮上|BCDを外す|落ち着いて呼吸を確保し、並んで浮上する。
+緊急スイミングアセント(CESA)で重要なのは?|息を吐き続けながら浮上する|息を止める|全力で潜る|マスクを外す|浮上中の肺の過膨張を防ぐため。
+浮力の微調整に最も適しているのは?|呼吸(肺の容量)による調整|ウエイトの付け外し|フィンの角度のみ|タンクの交換|吸気で浮き、吐気で沈む。
+空気消費が少なく疲労しにくい呼吸は?|ゆっくり深い呼吸|速く浅い呼吸|息止め|過呼吸|ゆっくりだと二酸化炭素もたまりにくい。
+潜水前の過呼吸(ハイパーベンチレーション)は?|危険なので行わない|推奨される|息が長続きして安全|必須|二酸化炭素が減り、意識を失う危険がある。
+水面で意識のないダイバーへの最優先は?|気道確保と呼吸の確認|様子見|水を吐かせる|体を温める|呼吸がなければ人工呼吸と救助要請を行う。
+酸素中毒の症状は?|けいれん・視野狭窄|発疹|腹痛|脱毛|水中でのけいれんは溺水につながる。
+一酸化炭素中毒の仕組みは?|ヘモグロビンと強く結合し酸素運搬を妨げる|窒素が泡になる|血管が詰まる|肺が膨張する|汚れたコンプレッサー空気の混入が原因になる。
+低体温症の初期兆候は?|震えと判断力の低下|発汗|空腹感|強い眠気のみ|体温低下は集中力や操作力を落とし事故につながる。
+ファーストステージの中圧ポートから供給される先は?|セカンドステージとBCD|残圧計のみ|ウエイト|マスク|中圧は周囲圧より一定高い圧で供給される。
+残圧計が接続されるポートは?|高圧ポート|中圧ポート|セカンドステージ|BCD排気弁|タンク圧をそのまま測るため高圧ポートに接続する。
+DINとヨークの違いは?|タンクとの接続方式(ねじ込みかクランプか)|ガスの種類|色|タンク容量|接続形式が異なり、取り付けの互換性も異なる。
+BCDのパワーインフレーターの役割は?|低圧空気でBCDを膨らませる|空気を圧縮する|水を排出する|タンクを充填する|中圧ホースを通じ、ボタン操作で給気する。
+BCDから空気を抜くときのホースの位置は?|高くして排気する|低くして排気する|どちらでも同じ|水平にする|空気は高い所に集まるため。
+適正なウエイト量の確認方法は?|空気が少ないタンクで5m付近に留まれる量|常に沈む量|常に浮く量|ゼロ|残圧が少なく軽くなっても、安全停止ができる量にする。
+ダイブコンピューターで高度設定が必要な理由は?|大気圧が低く窒素の許容が変わるため|水温が変わるため|魚が減るため|塩分が変わるため|標高が高いほど減圧症のリスクが増える。
+ダイバーがナイフやカッターを携行する主な理由は?|ロープや釣り糸の絡まりを切るため|調理のため|護身のため|魚を獲るため|絡まり対策としての安全器材。
+水面ブイ(DSMB)の使い方は?|浮上時に上げて位置を知らせる|潜降時に沈める|魚を寄せる|記録に使う|船に自分の位置を知らせるために使う。
+タンクの定期耐圧検査の目的は?|強度や劣化を確認する|色を塗り替える|容量を増やす|軽量化する|破裂など重大事故を防ぐため。
+タンクを直射日光下に長時間置くと?|内圧が上がり危険|空気が減る|冷える|軽くなる|温度上昇で内圧が上がる。
+厚いスーツを着る場合のウエイトは?|増やす|減らす|変わらない|ゼロにする|スーツが厚いほど浮力が大きいため。
+呼吸が吸いにくいときにまず疑うのは?|タンクバルブが十分に開いていない|空気が多すぎる|水温が低い|マスクの曇り|バルブ半開きなどによる供給不足が代表例。
+ダイブコンピューターが故障したときは?|潜水を中止し安全に浮上する|そのまま続行する|さらに深く潜る|無視する|管理手段を失うため浮上する。
+ジャイアントストライドでのエントリー時は?|周囲を確認しマスクと器材を押さえる|頭から飛び込む|器材を外す|目を閉じる|着水位置と器材の状態を確認してから行う。
+潜降のポイントは?|足から、耳抜きをしながらゆっくり|頭から急ぐ|息を止めて沈む|耳抜きは省く|耳の状態に合わせて下りる。
+一般的な潜降速度の目安は?|毎分10〜20m以内|毎分60m|制限なし|毎分100m|耳抜きに合わせて無理なく潜降する。
+底で砂泥を巻き上げないための姿勢は?|水平でフィンを上げる|直立する|膝をつく|逆さまになる|視界の悪化や生物への影響を避ける。
+バディ間の適切な距離は?|互いに見え、すぐ援助できる範囲|10m以上|ほぼ無関係|前後に50m|緊急時にすぐ対応できる距離を保つ。
+ダイビングを中止する基準として適切なのは?|不調・残圧低下・計画からの逸脱|景色が好み|魚が少ない|気分が乗らない|安全に関わる要因は中止が基本。
+残圧の管理で正しいのは?|帰路やエア共有を見込んで余裕を残す|ゼロまで使う|半分で必ず終わる|ゲージは見ない|予備の空気を確保する。
+エア共有での浮上に必要な残圧は、何を基準に決める?|2人で浮上するのに必要な空気量|タンクの色|水温|透明度|共有時は消費が増えるため。
+浮上中のBCD操作は?|膨張する空気を逃がしながら調整する|空気を足し続ける|排気を閉じる|何もしない|浮上で膨張するため排気が必要。
+浮上中の基本動作は?|上を見て周囲を確認し、片手を上げる|下を向く|目を閉じる|急いで泳ぐ|頭上の障害物や船を確認する。
+水面に着いたら最初に行うことは?|BCDを膨らませ浮力を確保する|器材を外す|再び潜る|泳ぎ回る|水面で沈まないよう浮力確保が最優先。
+コンパスで戻る方位(逆方位)を求めるには?|180度を足すか引く|90度を足す|45度を引く|360度を足す|往路の逆は180度反対。
+潮流が強い場所での基本計画は?|最初に流れに向かい、帰りは流れに乗る|最初に流れに乗る|流れは無視する|ランダムに進む|疲れた後の帰路を楽にするため。
+大潮のときの傾向は?|潮流が強くなりやすい|潮流が弱い|無関係|透明度が必ず上がる|潮の干満差が大きく、流れが強くなりやすい。
+うねりや高い波があるときは?|エントリーやエキジットが難しくなる|影響しない|安全性が上がる|船が不要になる|危険度を考え、中止も検討する。
+透明度が低いときは?|バディ間隔を詰めて慎重に|距離を取る|深く潜る|ライトを消す|見失いやすいため慎重に行動する。
+雷が近づいてきたら?|直ちに水から上がる|潜って避ける|無視する|深く潜る|落雷の危険があるため。
+サーモクラインとは?|水温が急に変わる層|潮の流れ|海藻の群生地|塩分の層|保温や浮力の調整に影響する。
+沈船や洞窟の内部のような閉鎖環境は?|専門の訓練と装備が必要|初級でも問題ない|ライトのみで可|訓練は不要|直接浮上できないため危険度が高い。
+ダイブプランの最大水深は?|資格・経験・条件に応じて決める|常に40m|常に最深部を目指す|気分で決める|自分の限界を超えない設定が基本。
+夜間潜水で必須の装備は?|ライトと予備ライト|カメラ|大型ナイフ|浮き輪|故障時の備えも必要。
+持病があるときの潜水は?|医師の診断で可否を確認する|自己判断で潜る|隠して潜る|気にしない|圧力変化の影響を受けるため。
+服薬中の潜水は?|医師や薬剤師に確認する|自己判断で飲む|常に問題ない|必ず禁止|薬により影響が異なる。
+耳栓をして潜ると?|耳抜きができず危険|安全になる|耳が温まる|耳抜きが楽になる|外耳が密閉され、鼓膜を損傷するおそれがある。
+BSACの初級資格はどれ?|Ocean Diver|Sports Diver|Dive Leader|First Class Diver|Ocean Diverが入門資格にあたる。
+BSACでOcean Diverの次の段階は?|Sports Diver|Dive Leader|First Class Diver|Instructor|Ocean Diver→Sports Diverと進む。
+ダイビング計画で重要なのは?|バディと内容を共有する|各自バラバラに動く|口外しない|無計画で行う|互いの役割と手順を決めておく。
+ブリーフィングで必ず確認するのは?|緊急時の対応と合図|食事の内容|お土産|SNSの投稿|万一に備えた手順を確認する。
+水中での音の方向は?|わかりにくい|わかりやすい|聞こえない|空気中と同じ|水中では音の伝わりが速く、方向感覚が鈍る。
+水中での色の見え方は?|深くなるほど赤から失われる|変わらない|青から先に失われる|全て鮮明|水が長波長の光を吸収するため。
+水中のマスク越しでは物体は?|近く大きく見える|遠く小さく見える|変わらない|歪まない|マスク内の空気層による光の屈折で拡大される。
+水中で空気の消費が増える要因は?|深度・運動量・緊張|水温上昇|休息|透明度|ストレスや運動で呼吸が速くなる。
+水は空気より熱を奪う速度が?|約25倍|約2倍|同じ|遅い|低体温対策が必要な理由。
+溶解した窒素の排出が遅い部位は?|脂肪組織など|血液|肺|なし|組織ごとに排出速度が異なる。
+水深が深いほど窒素分圧は?|高くなる|低くなる|変わらない|ゼロになる|ドルトンの法則で、全圧に比例して分圧が上がる。
+ダイビング前後の飲酒は?|避ける|推奨される|無害|必須|判断力や代謝に影響し、減圧症のリスクも高まる。
+水中で気分が悪くなったら?|バディに伝え浅い所へ移動する|我慢する|隠す|さらに深く潜る|早めの申告が事故を防ぐ。
+水面でぐったりしたバディの搬送中の優先事項は?|気道確保と救助要請|器材の回収|撮影|放置|生命の確保が最優先。
+成人のCPRでの胸骨圧迫と人工呼吸の比は?|30:2|15:1|5:1|10:5|成人のCPRの一般的な比率。
+酸素投与の目的は?|窒素の排出と組織の酸素化|体を冷やす|体を温める|鎮痛|酸素吸入は減圧症の応急処置の基本。
+緊急通報で伝えるべきことは?|場所・状況・人数・症状|天気だけ|名前のみ|魚の種類|正確な位置と状況が重要。
+水中で嘔吐しそうになったら?|レギュレーターを咥えたまま吐く|外して吐く|息を止める|マスクを外す|呼吸を維持するため、口から外さない。
+船酔いの対策は?|前日の睡眠と事前の酔い止め|飲酒|空腹で乗る|我慢する|体調管理は安全の基本。
+水中でパニックになりかけたときは?|止まる・呼吸する・考える・行動する|全力で浮上する|マスクを外す|バディから離れる|落ち着いて状況を確認する。
+クラゲに刺されたときは?|擦らず触手を除去し、必要なら医療機関へ|強く擦る|放置する|真水に浸し続ける|擦ると刺胞が刺激され悪化する。
+足がつったときは?|止まって筋肉を伸ばす|激しく動く|無視する|息を止める|ゆっくり伸ばして落ち着かせる。
+バディとはぐれたときは?|約1分探して見つからなければ浮上する|急浮上する|深く潜る|潜り続ける|決めた手順に従う。
+エア共有で空気源を提供する側は?|落ち着いて相手の呼吸を支える|その場から逃げる|息を止める|何もしない|共有しながら落ち着いて浮上する。
+ダイバーの安全団体DANの主な役割は?|潜水事故の相談・研究・保険|器材販売|競技会の運営|宝探し|事故対応や教育を行う。
+水中での器材トラブルへの基本方針は?|まず止まって落ち着いて対処する|無視する|急浮上する|バディを置いて浮上する|冷静に原因を確認し、計画に従う。`;
+
+const N=60, PASS=0.75;
+const BANK=RAW.trim().split("\n").map(l=>{const a=l.split("|");return{q:a[0],c:a[1],o:a.slice(1,5),e:a[5]||""}});
+const $=document.getElementById("app");
+let S=null;
+
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function home(){
+  $.innerHTML=`<h1>BSAC 初級ライセンス 模擬テスト</h1>
+  <p>問題バンク${BANK.length}問からランダムに${N}問を出題します(4択)。</p>
+  <ul><li>合格ライン: 正答率${PASS*100}%以上(${Math.ceil(N*PASS)}問以上)</li>
+  <li>選択肢を選ぶと次の問題へ進みます</li>
+  <li>各問題で「後で見返す」チェックと「前の問題」ボタンが使えます</li>
+  <li>最終問題の後、提出前に確認画面が表示されます</li></ul>
+  <button class="btn" id="go">テスト開始</button>`;
+  document.getElementById("go").onclick=start;
+}
+
+function start(){
+  S={i:0,items:shuffle(BANK).slice(0,N).map(x=>({q:x.q,c:x.c,e:x.e,o:shuffle(x.o),a:null,f:false}))};
+  quiz();
+}
+
+function quiz(){
+  const t=S.items[S.i];
+  $.innerHTML=`<div class="top"><span>問題 ${S.i+1} / ${N}</span><button class="link" id="cf">確認画面へ</button></div>
+  <div class="bar"><i style="width:${(S.i+1)/N*100}%"></i></div>
+  <h2>${esc(t.q)}</h2>
+  <div class="opts">${t.o.map((o,k)=>`<button class="opt${t.a===k?" sel":""}" data-k="${k}">${"ABCD"[k]}. ${esc(o)}</button>`).join("")}</div>
+  <label class="flag"><input type="checkbox" id="fl" ${t.f?"checked":""}> 後で見返す</label>
+  <div class="nav"><button class="btn sub" id="bk" ${S.i?"":"disabled"}>← 前の問題</button></div>`;
+  $.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+    t.a=+b.dataset.k;
+    if(S.i<N-1){S.i++;quiz()}else confirmPage();
+    window.scrollTo(0,0);
+  });
+  document.getElementById("fl").onchange=e=>{t.f=e.target.checked};
+  document.getElementById("bk").onclick=()=>{if(S.i>0){S.i--;quiz()}};
+  document.getElementById("cf").onclick=confirmPage;
+}
+
+function confirmPage(){
+  const un=S.items.filter(t=>t.a===null).length, fl=S.items.filter(t=>t.f).length;
+  $.innerHTML=`<h1>回答を提出しますか?</h1>
+  <div class="warn">⚠ 提出すると回答は変更できず、結果が集計されます。<br>未回答: <b>${un}問</b> / 見返しチェック: <b>${fl}問</b></div>
+  <p class="leg">番号を押すとその問題に戻れます(赤枠=未回答、⚑=見返しチェック)</p>
+  <div class="grid">${S.items.map((t,k)=>`<button data-k="${k}" class="${t.a===null?"un":"done"}${t.f?" fl":""}">${k+1}</button>`).join("")}</div>
+  <div class="nav"><button class="btn sub" id="back">← 問題に戻る</button><button class="btn" id="sub">提出して結果を見る</button></div>`;
+  $.querySelectorAll(".grid button").forEach(b=>b.onclick=()=>{S.i=+b.dataset.k;quiz();window.scrollTo(0,0)});
+  document.getElementById("back").onclick=()=>{S.i=N-1;quiz()};
+  document.getElementById("sub").onclick=()=>{
+    if(un>0&&!confirm(`未回答が${un}問あります。本当に提出しますか?`))return;
+    result();
+  };
+  window.scrollTo(0,0);
+}
+
+function result(){
+  const ok=S.items.filter(t=>t.a!==null&&t.o[t.a]===t.c).length;
+  const pct=ok/N*100, pass=ok/N>=PASS;
+  $.innerHTML=`<h1>結果</h1>
+  <div class="score ${pass?"pass":"fail"}">${pass?"合格":"不合格"}</div>
+  <p>${ok} / ${N}問 正解(正答率 ${pct.toFixed(1)}%)<br><span class="leg">合格ライン ${PASS*100}%(${Math.ceil(N*PASS)}問)</span></p>
+  <h2>解答と解説</h2>
+  <div class="nav"><button class="btn sub" id="tg"></button></div>
+  <div id="rv"></div>
+  <div class="nav" style="margin-top:16px"><button class="btn" id="re">問題を入れ替えて再挑戦</button></div>`;
+  let only=false;
+  const list=()=>{
+    document.getElementById("tg").textContent=only?"すべて表示":"間違い・未回答のみ表示";
+    document.getElementById("rv").innerHTML=S.items.map((t,k)=>({t,k,r:t.a!==null&&t.o[t.a]===t.c})).filter(x=>!only||!x.r).map(({t,k,r})=>`<div class="rv ${r?"o":"x"}"><b class="${r?"ok":"ng"}">${r?"○":"×"}</b> <b>${k+1}.</b> ${t.f?"⚑ ":""}${esc(t.q)}<br>あなたの回答: ${t.a===null?"未回答":esc(t.o[t.a])}<br>正解: <b class="ok">${esc(t.c)}</b><div class="ex">解説: ${esc(t.e)}</div></div>`).join("")||"<p>全問正解です!</p>";
+  };
+  document.getElementById("tg").onclick=()=>{only=!only;list()};
+  document.getElementById("re").onclick=start;
+  list();
+  window.scrollTo(0,0);
+}
+
+home();
+</script>
+</body>
+</html>
